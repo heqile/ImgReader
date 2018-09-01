@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QScrollBar>
 
+
 ImgReader::ImgReader(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::ImgReader), m_currentImageIndex(0)
 {
@@ -23,6 +24,8 @@ ImgReader::ImgReader(QWidget *parent) :
 
     ui->scrollArea->setAlignment(Qt::AlignCenter);
     ui->scrollArea->setWidget(this->m_imageContainer.get());
+
+    this->m_imageScaledPercentage = 100;
 
     this->updateStatusBar();
 
@@ -38,6 +41,12 @@ ImgReader::~ImgReader()
     delete ui;
 }
 
+void ImgReader::_setUpImageContainer(const QSharedPointer<QPixmap>& pixmap, int percentage)
+{
+    int height = int(pixmap->height() * (percentage / float(100.0)) );
+    this->m_imageContainer->setPixmap(pixmap->scaledToHeight(height, Qt::TransformationMode::FastTransformation));
+}
+
 void ImgReader::display()
 {
     if (this->m_filesList.isEmpty()) {
@@ -46,7 +55,10 @@ void ImgReader::display()
     else {
         QImage image;
         image.load(this->m_filesList[this->m_currentImageIndex]);
-        this->m_imageContainer->setPixmap(QPixmap::fromImage(image));
+        this->m_image = QSharedPointer<QPixmap>(new QPixmap(QPixmap::fromImage(image)));
+
+        this->_setUpImageContainer(this->m_image, this->m_imageScaledPercentage);
+
         this->ui->scrollArea->verticalScrollBar()->setValue(0);
     }
     this->updateStatusBar();
@@ -59,9 +71,22 @@ void ImgReader::updateStatusBar()
         statusMessage = "Ready";
     }
     else {
-        statusMessage = QString("%1/%2").arg(QString::number(this->m_currentImageIndex+1)).arg(QString::number(this->m_filesList.size()));
+        statusMessage = QString("%1/%2")
+                .arg(QString::number(this->m_currentImageIndex+1))
+                .arg(QString::number(this->m_filesList.size()));
     }
     this->m_statusBarMessage->setText(statusMessage);
+}
+
+void ImgReader::_zoomImage(int percentage)
+{
+    const QPixmap *localPixmap = this->m_imageContainer->pixmap();
+    if (localPixmap){
+        if (percentage <= 0) {
+            return;
+        }
+        this->_setUpImageContainer(this->m_image, this->m_imageScaledPercentage);
+    }
 }
 
 void ImgReader::mousePressEvent(QMouseEvent *ev)
@@ -78,6 +103,24 @@ void ImgReader::mousePressEvent(QMouseEvent *ev)
     this->updateStatusBar();
 }
 
+void ImgReader::wheelEvent(QWheelEvent *event)
+{
+    if (QApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier) ) {
+        QPoint p = event->angleDelta()/8;
+        if (p.y() > 0) {
+            this->m_imageScaledPercentage +=5;
+        }
+        else {
+            if (this->m_imageScaledPercentage > 5) {
+                this->m_imageScaledPercentage -= 5;
+            }
+        }
+        this->_zoomImage(this->m_imageScaledPercentage);
+    }
+    event->accept();
+}
+
+// TODO: Disable wheel event caught by scrollarea; config pannel; code org; display name in status bar
 void ImgReader::loadFilesList()
 {
     QFileDialog dialog(this);
@@ -88,6 +131,7 @@ void ImgReader::loadFilesList()
     dialog.setMimeTypeFilters(mimeTypeFilters);
     dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
     if (dialog.exec()) {
+        this->handleCloseAll();
         this->m_filesList.append(dialog.selectedFiles());
     }
     this->display();
@@ -121,6 +165,8 @@ void ImgReader::displayAbout()
 
 void ImgReader::handleCloseAll()
 {
+    // reset list and current index indicator
     this->m_filesList.clear();
+    this->m_currentImageIndex = 0;
     this->display();
 }

@@ -22,12 +22,18 @@ private:
     QStringList m_filesList;
     QSharedPointer<QLabel> m_imageContainer;
     QSharedPointer<QLabel> m_statusBarMessage;
+    QSharedPointer<QPixmap> m_image;
+    int m_imageScaledPercentage;
     int m_currentImageIndex;
+
+    void _setUpImageContainer(const QSharedPointer<QPixmap> &pixmap, int percentage);
 
     void display();
     void updateStatusBar();
+    void _zoomImage(int percentage);
 
     void mousePressEvent(QMouseEvent *ev);
+    void wheelEvent(QWheelEvent *event);
 
 private slots:
      void loadFilesList();
