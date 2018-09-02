@@ -18,6 +18,8 @@ ImgReader::ImgReader(QWidget *parent) :
 
     this->m_statusBarMessage = QSharedPointer<QLabel>(new QLabel(this));
     this->ui->statusBar->addWidget(this->m_statusBarMessage.get());
+    this->m_statusBarFilePath = QSharedPointer<QLabel>(new QLabel(this));
+    this->ui->statusBar->addPermanentWidget(this->m_statusBarFilePath.get());
 
     this->m_imageContainer = QSharedPointer<QLabel>(new QLabel(this));
     this->m_imageContainer->setSizePolicy(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Maximum);
@@ -67,15 +69,18 @@ void ImgReader::display()
 void ImgReader::updateStatusBar()
 {
     QString statusMessage;
+    QString filePath;
     if (this->m_filesList.isEmpty() || this->m_filesList.size() == 0) {
         statusMessage = "Ready";
     }
     else {
+        filePath = this->m_filesList[this->m_currentImageIndex];
         statusMessage = QString("%1/%2")
                 .arg(QString::number(this->m_currentImageIndex+1))
                 .arg(QString::number(this->m_filesList.size()));
     }
     this->m_statusBarMessage->setText(statusMessage);
+    this->m_statusBarFilePath->setText(filePath);
 }
 
 void ImgReader::_zoomImage(int percentage)
@@ -120,7 +125,7 @@ void ImgReader::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-// TODO: config pannel; code org; display name in status bar
+// TODO: config pannel; code org;
 void ImgReader::loadFilesList()
 {
     QFileDialog dialog(this);

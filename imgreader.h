@@ -22,6 +22,7 @@ private:
     QStringList m_filesList;
     QSharedPointer<QLabel> m_imageContainer;
     QSharedPointer<QLabel> m_statusBarMessage;
+    QSharedPointer<QLabel> m_statusBarFilePath;
     QSharedPointer<QPixmap> m_image;
     int m_imageScaledPercentage;
     int m_currentImageIndex;
