@@ -24,10 +24,12 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        imgreader.cpp
+        imgreader.cpp \
+        imageviewer.cpp
 
 HEADERS += \
-        imgreader.h
+        imgreader.h \
+        imageviewer.h
 
 FORMS += \
         imgreader.ui

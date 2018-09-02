@@ -120,7 +120,7 @@ void ImgReader::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-// TODO: Disable wheel event caught by scrollarea; config pannel; code org; display name in status bar
+// TODO: config pannel; code org; display name in status bar
 void ImgReader::loadFilesList()
 {
     QFileDialog dialog(this);
