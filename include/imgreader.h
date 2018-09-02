@@ -24,6 +24,10 @@ private:
     QSharedPointer<QLabel> m_statusBarMessage;
     QSharedPointer<QLabel> m_statusBarFilePath;
     QSharedPointer<QPixmap> m_image;
+    QSharedPointer<const QPoint> m_mousePosition;
+    QSharedPointer<const QPoint> m_scrollBarsValueRegister;
+    QSharedPointer<const QPoint> m_imageContainerCurrentPos;
+
     int m_imageScaledPercentage;
     int m_currentImageIndex;
 
@@ -32,8 +36,11 @@ private:
     void display();
     void updateStatusBar();
     void _zoomImage(int percentage);
+    void _moveImage(int deltaX, int deltaY);
 
     void mousePressEvent(QMouseEvent *ev);
+    void mouseMoveEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *ev);
     void wheelEvent(QWheelEvent *event);
 
 private slots:

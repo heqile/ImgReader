@@ -94,12 +94,70 @@ void ImgReader::_zoomImage(int percentage)
     }
 }
 
+void ImgReader::_moveImage(int deltaX, int deltaY)
+{
+    if (!this->m_imageContainerCurrentPos || !this->m_scrollBarsValueRegister) {
+        //TODO: exception here
+        return;
+    }
+    // down -> neg delta, up -> pos delta
+    int verticalScrollBarValue = this->m_scrollBarsValueRegister->y();
+    int verticalScrollBarMaximun = this->ui->scrollArea->verticalScrollBar()->maximum();
+    int verticalScrollBarMinimun = this->ui->scrollArea->verticalScrollBar()->minimum();
+
+    if (verticalScrollBarValue - deltaY > verticalScrollBarMaximun) {
+        deltaY = verticalScrollBarValue - verticalScrollBarMaximun;
+    }
+    if (verticalScrollBarValue - deltaY < verticalScrollBarMinimun) {
+        deltaY = verticalScrollBarValue - verticalScrollBarMinimun;
+    }
+
+    // right -> neg delta, left -> pos delta
+    int horizontalScrollBarValue = this->m_scrollBarsValueRegister->x();
+    int horizontalScrollBarMaximun = this->ui->scrollArea->horizontalScrollBar()->maximum();
+    int horizontalScrollBarMinimun = this->ui->scrollArea->horizontalScrollBar()->minimum();
+
+    if (horizontalScrollBarValue - deltaX > horizontalScrollBarMaximun) {
+        deltaX = horizontalScrollBarValue - horizontalScrollBarMaximun;
+    }
+    if (horizontalScrollBarValue - deltaX < horizontalScrollBarMinimun) {
+        deltaX = horizontalScrollBarValue - horizontalScrollBarMinimun;
+    }
+    this->m_imageContainer->move(this->m_imageContainerCurrentPos->x() + deltaX, this->m_imageContainerCurrentPos->y() + deltaY);
+    this->ui->scrollArea->horizontalScrollBar()->setValue(m_scrollBarsValueRegister->x() - deltaX);
+    this->ui->scrollArea->verticalScrollBar()->setValue(m_scrollBarsValueRegister->y() - deltaY);
+}
+
 void ImgReader::mousePressEvent(QMouseEvent *ev)
 {
-    if(ev->buttons() == Qt::LeftButton){
-        this->handleNext();
+    if(ev->button() == Qt::LeftButton){
+        this->m_mousePosition = QSharedPointer<QPoint>(new QPoint(ev->windowPos().toPoint()));
+        this->m_imageContainerCurrentPos = QSharedPointer<QPoint>(new QPoint(this->m_imageContainer->pos()));
+        this->m_scrollBarsValueRegister = QSharedPointer<QPoint>(new QPoint(
+                                                               this->ui->scrollArea->horizontalScrollBar()->sliderPosition(),
+                                                               this->ui->scrollArea->verticalScrollBar()->sliderPosition()));
     }
-    else if(ev->buttons() == Qt::RightButton) {
+}
+
+void ImgReader::mouseMoveEvent(QMouseEvent *ev)
+{
+    if (this->m_mousePosition) {
+        QPoint currentPos = ev->windowPos().toPoint();
+        int deltaX = currentPos.x() - this->m_mousePosition->x();
+        int deltaY = currentPos.y() - this->m_mousePosition->y();
+        this->_moveImage(deltaX, deltaY);
+    }
+}
+
+void ImgReader::mouseReleaseEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::LeftButton){
+        if (*this->m_mousePosition == ev->windowPos().toPoint()) {
+            this->handleNext();
+        }
+        this->m_mousePosition.clear();
+    }
+    else if(ev->button() == Qt::RightButton) {
         this->handlePrevious();
     }
     else {
@@ -125,7 +183,7 @@ void ImgReader::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-// TODO: config pannel; code org;
+// TODO: config pannel;
 void ImgReader::loadFilesList()
 {
     QFileDialog dialog(this);
