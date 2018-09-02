@@ -1,4 +1,4 @@
-#include "imgreader.h"
+#include "include/imgreader.h"
 #include "ui_imgreader.h"
 
 #include <QObject>

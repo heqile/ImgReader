@@ -1,7 +1,6 @@
-#include "imageviewer.h"
+#include "include/imageviewer.h"
 
 #include <QApplication>
-#include <qevent.h>
 
 ImageViewer::ImageViewer(QWidget *parent) : QScrollArea(parent)
 {}

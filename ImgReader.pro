@@ -23,13 +23,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        imgreader.cpp \
-        imageviewer.cpp
+        src/main.cpp \
+        src/imgreader.cpp \
+        src/imageviewer.cpp
 
 HEADERS += \
-        imgreader.h \
-        imageviewer.h
+        include/imgreader.h \
+        include/imageviewer.h
 
 FORMS += \
         imgreader.ui
@@ -40,7 +40,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    resources.qrc
+    resource/resources.qrc
 
 DISTFILES += \
     resource/icon.jpg

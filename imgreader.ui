@@ -47,8 +47,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>531</width>
-           <height>297</height>
+           <width>535</width>
+           <height>309</height>
           </rect>
          </property>
         </widget>
@@ -122,7 +122,7 @@
   <customwidget>
    <class>ImageViewer</class>
    <extends>QScrollArea</extends>
-   <header location="global">imageviewer.h</header>
+   <header location="global">include/imageviewer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

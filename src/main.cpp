@@ -1,4 +1,4 @@
-#include "imgreader.h"
+#include "include/imgreader.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

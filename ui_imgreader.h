@@ -20,7 +20,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
-#include <imageviewer.h>
+#include <include/imageviewer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,7 +87,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 531, 297));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 535, 309));
         scrollArea->setWidget(scrollAreaWidgetContents);
 
         gridLayout->addWidget(scrollArea, 0, 1, 1, 2);
