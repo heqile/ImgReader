@@ -9,10 +9,13 @@ class ImageViewer : public QScrollArea
     Q_OBJECT
 private:
     void wheelEvent(QWheelEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 public:
     explicit ImageViewer(QWidget *parent = nullptr);
 
 signals:
+    void LeftKeyPressed();
+    void RightKeyPressed();
 
 public slots:
 };

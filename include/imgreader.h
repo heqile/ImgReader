@@ -41,6 +41,7 @@ private:
     void mousePressEvent(QMouseEvent *ev);
     void mouseMoveEvent(QMouseEvent *ev);
     void mouseReleaseEvent(QMouseEvent *ev);
+    void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
 
 private slots:

@@ -9,12 +9,14 @@
 #include <QMouseEvent>
 #include <QMessageBox>
 #include <QScrollBar>
+#include "include/imageviewer.h"
 
 
 ImgReader::ImgReader(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::ImgReader), m_currentImageIndex(0)
 {
     this->ui->setupUi(this);
+    this->setFocusPolicy(Qt::StrongFocus);
 
     this->m_statusBarMessage = QSharedPointer<QLabel>(new QLabel(this));
     this->ui->statusBar->addWidget(this->m_statusBarMessage.get());
@@ -36,6 +38,8 @@ ImgReader::ImgReader(QWidget *parent) :
     connect(this->ui->actionCloseAll, SIGNAL(triggered()), this, SLOT(handleCloseAll()));
     connect(this->ui->previousButton, SIGNAL(clicked()), this, SLOT(handlePrevious()));
     connect(this->ui->nextButton, SIGNAL(clicked()), this, SLOT(handleNext()));
+    connect(this->ui->scrollArea, SIGNAL(LeftKeyPressed()), this, SLOT(handlePrevious()));
+    connect(this->ui->scrollArea, SIGNAL(RightKeyPressed()), this, SLOT(handleNext()));
 }
 
 ImgReader::~ImgReader()
@@ -181,6 +185,17 @@ void ImgReader::wheelEvent(QWheelEvent *event)
         this->_zoomImage(this->m_imageScaledPercentage);
     }
     event->accept();
+}
+
+void ImgReader::keyPressEvent(QKeyEvent *event)
+{
+    // process key press in main frame
+    if (event->key() == Qt::Key_Left) {
+        this->handlePrevious();
+    }
+    else if (event->key() == Qt::Key_Right) {
+        this->handleNext();
+    }
 }
 
 // TODO: config pannel;
